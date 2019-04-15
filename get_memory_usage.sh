@@ -14,6 +14,8 @@ function get_memory_usage {
   ## Convert into GB
   usage_gb=$(echo "scale=2; $usage/1024./1024." | bc)
   total_bg=$(echo "scale=2; ${values[0]}/1024./1024." | bc)
+  ## Here usage doesn't account for SReclaimable, which can be released by the system
+  ## Another way would be to compute the usage as (MemTotal - MemFree - Buffers - Cached)
 }
 
 # Get the usage
