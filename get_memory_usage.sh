@@ -3,7 +3,9 @@
 function get_memory_usage {
   mem_readings=`cat /proc/meminfo | grep "MemTotal\|MemFree\|Buffers\|Cached\|SReclaimable\|Shmem\|SwapTotal\|SwapFree"`
   values=(`(IFS=' '; for mem_reading in $mem_readings; do echo "$mem_reading" | grep "[0-9]"; done)`)
+  ## Computation a la htop : https://stackoverflow.com/questions/41224738/how-to-calculate-system-memory-usage-from-proc-meminfo-like-htop 
   ## MemTotal: MemFree: Buffers: Cached: SwapCached: SwapTotal: SwapFree: Shmem: SReclaimable: 
+  ##        0:       1:       2:      3:          4:         5:        6:     7:            8:
   ## All in kB
   swap=$(expr ${values[5]} - ${values[6]})
   cached=$(expr ${values[3]} + ${values[8]} - ${values[7]})
@@ -16,4 +18,4 @@ function get_memory_usage {
 
 # Get the usage
 get_memory_usage
-echo "Memory : $usage_gb GB [used] / $total_bg [total]"
+echo "Memory : $usage_gb GB [non-cache/buffer] / $total_bg GB [total]"
