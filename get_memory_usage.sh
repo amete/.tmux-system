@@ -8,16 +8,15 @@ function get_memory_usage {
   ##        0:       1:       2:      3:          4:         5:        6:     7:            8:
   ## All in kB
   swap=$(expr ${values[5]} - ${values[6]})
-  cached=$(expr ${values[3]} + ${values[8]} - ${values[7]})
+  cached=$(expr ${values[3]} + ${values[8]} - ${values[7]})  # Here cache is "corrected" for SReclaimable
+  cached_nc=$(expr ${values[3]})                             # Here cache is not "corrected" for SReclaimable
   buffers=$(expr ${values[2]})
-  usage=$(expr ${values[0]} - ${values[1]} - ${buffers} - ${cached})
+  usage=$(expr ${values[0]} - ${values[1]} - ${buffers} - ${cached_nc}) # Here we use non "corrected" cache
   ## Convert into GB
   usage_gb=$(echo "scale=2; $usage/1024./1024." | bc)
   total_bg=$(echo "scale=2; ${values[0]}/1024./1024." | bc)
-  ## Here usage doesn't account for SReclaimable, which can be released by the system
-  ## Another way would be to compute the usage as (MemTotal - MemFree - Buffers - Cached)
 }
 
 # Get the usage
 get_memory_usage
-echo "Memory : $usage_gb GB [non-cache/buffer] / $total_bg GB [total]"
+echo "Memory : $usage_gb GB [used] / $total_bg GB [total]"
