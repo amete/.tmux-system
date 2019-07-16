@@ -11,7 +11,7 @@ function get_memory_usage {
   cached=$(expr ${values[3]} + ${values[8]} - ${values[7]})  # Here cache is "corrected" for SReclaimable
   cached_nc=$(expr ${values[3]})                             # Here cache is not "corrected" for SReclaimable
   buffers=$(expr ${values[2]})
-  usage=$(expr ${values[0]} - ${values[1]} - ${buffers} - ${cached_nc}) # Here we use non "corrected" cache
+  usage=$(expr ${values[0]} - ${values[1]} - ${buffers} - ${cached}) # Here we use "corrected" cache
   ## Convert into GB
   usage_gb=$(echo "scale=2; $usage/1024./1024." | bc)
   total_bg=$(echo "scale=2; ${values[0]}/1024./1024." | bc)
